@@ -1,0 +1,18 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="grid gap-6 bg-unag-dark-green px-(--page-gutter) pb-(--space-xl) pt-(--space-3xl) border-t border-(--color-rule)">
+  <p class="m-0 max-w-[15ch] font-display text-[clamp(2rem,8vw,4rem)] font-extrabold leading-[0.95] tracking-tight mb-5text-white">Formando el <span class="text-unag-green">futuro</span> de <span class="texto-cursiva text-unag-green">Honduras</span> .</p>
+  <div class="flex flex-col gap-4 border-t border-(--color-rule) pt-6 md:flex-row md:items-end md:justify-between">
+    <div class="flex flex-col gap-1">
+      <img src="/img/logo-unag-blanco.png" alt="UNAG" class="w-50" />
+      <span class="text-xs font-medium text-white opacity-60 mt-5">© {year} · Universidad Nacional de Agricultura</span>
+    </div>
+    <div class="flex gap-4">
+      <a href="/search" class="text-xs font-bold text-unag-green no-underline transition-opacity duration-200 hover:opacity-70">Explorar</a>
+      <a href="/about" class="text-xs font-bold text-unag-green no-underline transition-opacity duration-200 hover:opacity-70">Institucional</a>
+      <a href="https://unag.edu.hn" class="text-xs font-bold text-unag-green no-underline transition-opacity duration-200 hover:opacity-70">Portal</a>
+    </div>
+  </div>
+</footer>

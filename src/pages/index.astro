@@ -1,0 +1,74 @@
+---
+import PostCard from "@/components/PostCard.astro";
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("blog");
+const sortedPosts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const categories = [...new Set(allPosts.map((p) => p.data.category))];
+const latestPosts = sortedPosts.slice(0, 8);
+---
+
+<Layout title="Inicio">
+  <!-- Portal Nature Framing -->
+  <img src="/img/hojas/hoja-angulo-01.webp" class="fixed left-0 -translate-x-20 top-80 lg:top-50 w-35 lg:w-50 z-10" alt="" aria-hidden="true" />
+  <img src="/img/hojas/hoja-angulo-02.webp" class="fixed right-0 translate-x-20 w-35 lg:w-50 z-10" alt="" aria-hidden="true" />
+
+  <section class="eco-hero">
+    <div class="eco-hero__content pt-30">
+      <span class="eyebrow text-gray-700 dark:text-gray-300">Universidad Nacional de Agricultura</span>
+      <h1 class="text-unag-dark-green dark:text-gray-300 text-7xl font-extrabold">El pulso de la <span class="text-highlight">Innovación Agrícola</span> en Honduras.</h1>
+      <p class="text-md pb-10 text-gray-700 dark:text-gray-300">Historias, investigación y el impacto de nuestra comunidad académica desde el corazón de <span class="texto-cursiva text-xl">Olancho</span>.</p>
+    </div>
+  </section>
+
+  <!-- Marquee Scroll Slider - Latest Posts -->
+  <section class="marquee-surface ">
+    <div class="marquee-surface__header">
+      <h2 class="surface-label">Últimas Publicaciones</h2>
+      <a href="/search" class="see-more">Ver todas →</a>
+    </div>
+    <div class="marquee-track">
+      <div class="marquee-track__inner">
+        {latestPosts.map((post) => (
+          <PostCard latestPosts={post} />
+        ))}
+        {/* Repeat for infinite effect */}
+        {latestPosts.map((post) => (
+          <PostCard latestPosts={post} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- High-End Category Discovery (Typographic Category List FT3) -->
+  <section class="category-index">
+    <div class="category-index__header">
+      <h2 class="surface-label">Explorar por Área</h2>
+    </div>
+    <div class="category-list">
+      {categories.map((category) => (
+        <a href={`/search?categoria=${category}`} class="category-item">
+          <div class="category-item__info">
+            <span class="text-unag-dark-green dark:text-gray-300 font-extrabold text-xl">{category}</span>
+            <span class="category-count">{allPosts.filter(p => p.data.category === category).length} artículos</span>
+          </div>
+          <div class="category-item__arrow dark:text-unag-green!">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Call to Action / Search Redirect -->
+  <!-- <section class="search-cta">
+    <div class="search-cta__box">
+      <h2 class="search-cta__title">¿Buscas algo específico?</h2>
+      <p class="search-cta__text">Accede a nuestro archivo completo de investigaciones y noticias.</p>
+      <a href="/search" class="search-cta__btn">Abrir Buscador →</a>
+    </div>
+  </section> -->
+</Layout>
+
+

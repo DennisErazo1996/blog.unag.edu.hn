@@ -1,0 +1,12 @@
+---
+const { latestPosts } = Astro.props;
+---
+<a href={`/blog/${latestPosts.id}`} class="marquee-card">
+  <div class="marquee-card__img">
+    <img src={latestPosts.data.image} alt={latestPosts.data.title} loading="lazy" />
+  </div>
+  <div class="marquee-card__meta">
+    <span class="category">{latestPosts.data.category}</span>
+    <h3 class="text-unag-dark-green dark:text-gray-300 font-bold">{latestPosts.data.title}</h3>
+  </div>
+</a>

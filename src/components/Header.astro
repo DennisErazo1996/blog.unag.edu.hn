@@ -1,0 +1,19 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="fixed left-1/2 top-4 z-200 -translate-x-1/2 mx-auto flex w-max items-center gap-4 rounded-full border border-(--color-rule) bg-(--color-paper)/75 dark:bg-unag-dark-green px-3.5 py-2 shadow-lg backdrop-blur-xl sm:gap-6 md:px-5" aria-label="Primary">
+  <a href="/" class="text-base font-extrabold tracking-tight text-unag-dark-green no-underline dark:text-(--color-ink)">UNAG</a>
+  <ul class="m-0 flex list-none gap-3 border-l border-(--color-rule) p-0 pl-3 sm:gap-4 sm:pl-4">
+    <li><a href="/" class={`text-xs font-medium no-underline transition-colors duration-200 hover:text-(--color-accent) ${currentPath === "/" ? "font-bold text-(--color-accent)" : "text-(--color-ink)"}`} aria-current={currentPath === "/" ? "page" : undefined}>Inicio</a></li>
+    <li><a href="/search" class={`text-xs font-medium no-underline transition-colors duration-200 hover:text-(--color-accent) ${currentPath === "/search" ? "font-bold text-(--color-accent)" : "text-(--color-ink)"}`} aria-current={currentPath === "/search" ? "page" : undefined}>Explorar</a></li>
+  </ul>
+  
+  <div class="flex items-center gap-3 border-l border-(--color-rule) pl-3 sm:gap-4 sm:pl-4">
+    <button id="dark-toggle" class="flex h-7 w-7 items-center justify-center rounded-full border-none bg-transparent p-0 text-(--color-ink) transition-colors duration-200 hover:bg-(--color-rule) hover:text-(--color-accent)" aria-label="Cambiar tema">
+      <svg class="sun block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <svg class="moon hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+    <a href="https://unag.edu.hn" class="rounded-full bg-unag-dark-green px-3 py-1.5 text-xs font-bold text-white no-underline transition-transform duration-200 hover:scale-105 dark:bg-unag-green">Portal →</a>
+  </div>
+</nav>

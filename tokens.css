@@ -1,0 +1,100 @@
+/* Hallmark · macrostructure: Feature Stack · tone: modern-institutional · genre: editorial · theme: custom-unag · enrichment: H9 · nav: N5 · footer: Ft5 */
+
+:root {
+  /* Core UNAG palette (preserved) */
+  --color-unag-green: #1ba333;
+  --color-unag-dark-green: #00371d;
+  --color-unag-light-green: #6cc836;
+  --color-unag-yellow: #ffcc00;
+  --color-unag-overlay-green: #e5ffd5;
+  --color-unag-gray: #303030;
+  --color-unag-light-gray: #efefef;
+
+  /* Hallmark Palette (OKLCH) - Light Mode */
+  --color-paper: oklch(98% 0.005 145);
+  --color-paper-2: oklch(96% 0.01 145);
+  --color-rule: oklch(20% 0.02 145 / 0.06);
+  --color-ink: oklch(15% 0.02 145);
+  --color-accent: var(--color-unag-green);
+  --color-accent-soft: var(--color-unag-overlay-green);
+  --color-focus: var(--color-unag-yellow);
+
+  /* Typography tokens */
+  --font-display: "Montserrat", system-ui, sans-serif;
+  --font-body: "Montserrat", system-ui, sans-serif;
+  --font-hand: "Nothing You Could Do", cursive;
+
+  /* Spacing (4pt scale) */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  /* Type scale (1.25 ratio) */
+  --text-xs: 0.8rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.56rem;
+  --text-xl: 1.95rem;
+  --text-2xl: 2.44rem;
+  --text-display: clamp(2.5rem, 6vw, 4.5rem);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 160ms;
+  --dur-medium: 320ms;
+  --dur-slow: 480ms;
+
+  /* Layout */
+  --page-gutter: var(--space-md);
+  --rule-hair: 1px;
+}
+
+/* Dark Mode Overrides */
+:root.dark {
+  --color-paper: oklch(14% 0.01 145);
+  --color-paper-2: oklch(16% 0.012 145);
+  --color-rule: oklch(90% 0.01 145 / 0.1);
+  --color-ink: oklch(94% 0.005 145);
+  --color-accent: var(--color-unag-light-green);
+  --color-accent-soft: oklch(25% 0.04 145);
+  
+  /* Optical weight adjustment for dark mode */
+  font-weight: 350;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-gutter: var(--space-xl);
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-gutter: var(--space-xl);
+  }
+}
+
+/* Base helpers for modern institutional tone */
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+header.sticky {
+  background: linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0));
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+footer {
+  background: var(--color-unag-dark-green);
+  color: #fff;
+}
