@@ -49,7 +49,7 @@ const { Content } = await render(post);
 
       <div class="relative mt-12 border-t border-unag-dark-green/10 pt-8 dark:border-white/10">
         <a
-          href="/blog"
+          href="/search"
           class="inline-flex items-center gap-1.5 text-sm font-medium text-unag-green transition hover:text-unag-dark-green dark:hover:text-unag-light-green"
         >
           <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -75,7 +75,7 @@ const { Content } = await render(post);
                   href={`/blog/${rp.id}`}
                   class="group relative flex flex-col overflow-hidden rounded-xl border border-unag-dark-green/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-unag-dark-green/80"
                 >
-                  <div class="aspect-[16/9] overflow-hidden">
+                  <div class="aspect-video overflow-hidden">
                     <img
                       src={rp.data.image}
                       alt={rp.data.title}

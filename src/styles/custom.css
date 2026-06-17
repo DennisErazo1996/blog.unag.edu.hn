@@ -93,7 +93,6 @@
 /* Eco Hero */
 .eco-hero {
   padding: var(--space-4xl) var(--page-gutter) var(--space-2xl);
-  background: var(--color-paper);
   text-align: center;
 }
 .eco-hero__content {
@@ -330,3 +329,4 @@
     flex: 0 0 260px;
   }
 }
+

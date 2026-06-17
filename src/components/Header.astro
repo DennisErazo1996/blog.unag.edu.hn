@@ -2,8 +2,12 @@
 const currentPath = Astro.url.pathname;
 ---
 
-<nav class="fixed left-1/2 top-4 z-200 -translate-x-1/2 mx-auto flex w-max items-center gap-4 rounded-full border border-(--color-rule) bg-(--color-paper)/75 dark:bg-unag-dark-green px-3.5 py-2 shadow-lg backdrop-blur-xl sm:gap-6 md:px-5" aria-label="Primary">
-  <a href="/" class="text-base font-extrabold tracking-tight text-unag-dark-green no-underline dark:text-(--color-ink)">UNAG</a>
+<nav class="fixed scale-85 lg:scale-100 left-1/2 top-4 z-200 -translate-x-1/2 mx-auto flex w-max items-center gap-4 rounded-full border border-(--color-rule) bg-(--color-paper)/75 dark:bg-unag-dark-green px-3.5 py-2 shadow-lg backdrop-blur-xl sm:gap-6 md:px-5" aria-label="Primary">
+  <a href="/" class="text-base font-extrabold tracking-tight text-unag-dark-green no-underline dark:text-(--color-ink)">
+    <img src="/img/logo-unag-verde-oscuro.png" alt="UNAG Logo" class="w-20 lg:block dark:hidden hidden" />
+    <img src="/img/unag-blanco.png" alt="UNAG Logo" class="w-20 dark:block hidden" />
+    
+  </a>
   <ul class="m-0 flex list-none gap-3 border-l border-(--color-rule) p-0 pl-3 sm:gap-4 sm:pl-4">
     <li><a href="/" class={`text-xs font-medium no-underline transition-colors duration-200 hover:text-(--color-accent) ${currentPath === "/" ? "font-bold text-(--color-accent)" : "text-(--color-ink)"}`} aria-current={currentPath === "/" ? "page" : undefined}>Inicio</a></li>
     <li><a href="/search" class={`text-xs font-medium no-underline transition-colors duration-200 hover:text-(--color-accent) ${currentPath === "/search" ? "font-bold text-(--color-accent)" : "text-(--color-ink)"}`} aria-current={currentPath === "/search" ? "page" : undefined}>Explorar</a></li>
