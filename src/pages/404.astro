@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Página no encontrada" description="La página que buscas no existe.">
+  <section class="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
+    <span class="text-8xl font-extrabold text-unag-dark-green/10 dark:text-white/10 select-none">404</span>
+    <h1 class="mt-4 text-2xl font-extrabold text-unag-dark-green dark:text-white">Página no encontrada</h1>
+    <p class="mt-2 text-sm text-unag-gray/60 dark:text-white/50 max-w-sm">
+      El artículo o sección que buscas no existe o fue movido.
+    </p>
+    <div class="mt-8 flex gap-3">
+      <a
+        href="/"
+        class="rounded-full bg-unag-dark-green px-5 py-2.5 text-sm font-bold text-white transition hover:bg-unag-green dark:bg-unag-green"
+      >
+        Ir al inicio
+      </a>
+      <a
+        href="/search"
+        class="rounded-full border border-unag-dark-green/20 px-5 py-2.5 text-sm font-bold text-unag-dark-green transition hover:border-unag-green hover:text-unag-green dark:border-white/20 dark:text-white dark:hover:border-unag-light-green dark:hover:text-unag-light-green"
+      >
+        Explorar blog
+      </a>
+    </div>
+  </section>
+</Layout>

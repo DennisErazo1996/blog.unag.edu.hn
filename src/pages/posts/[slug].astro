@@ -1,0 +1,474 @@
+---
+export const prerender = false;
+import Layout from "../../layouts/Layout.astro";
+import { getAllPosts, getPostBySlug } from "../../lib/strapi";
+
+type StrapiPost = {
+  id: number | string;
+  data: {
+    title: string | null;
+    description: string | null;
+    content: string | Promise<string>;
+    date: Date | null;
+    category: string | null;
+    author: string | null;
+    image: string | string[] | null;
+    slug: string | null;
+  };
+};
+
+function resolveImage(image: string | string[] | null): string {
+  if (!image) return '';
+  return Array.isArray(image) ? (image[0] ?? '') : image;
+}
+
+const slug = Astro.params.slug;
+if (!slug) return Astro.redirect('/404');
+
+const post = await getPostBySlug(slug);
+if (!post) return Astro.redirect('/404');
+
+const allPosts: StrapiPost[] = (await getAllPosts()).filter(
+  (p : any) => typeof p.data.slug === 'string' && p.data.slug
+).sort((a : any, b : any) => {
+  const da = a.data.date?.getTime() ?? 0;
+  const db = b.data.date?.getTime() ?? 0;
+  return db - da;
+});
+
+const currentIndex = allPosts.findIndex((p) => p.data.slug === slug);
+const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+
+const relatedPosts: StrapiPost[] = allPosts
+  .filter((p) => p.data.category === post.data.category && p.data.slug !== post.data.slug)
+  .slice(0, 3);
+
+function enhanceContent(html: string): string {
+  if (!html) return html;
+  // Add IDs to h2/h3 for TOC anchors
+  let result = html.replace(/<(h[23])([^>]*)>([\s\S]*?)<\/\1>/g, (_, tag, attrs, inner) => {
+    const text = inner.replace(/<[^>]*>/g, '').trim();
+    const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 60);
+    return `<${tag}${attrs} id="${id}">${inner}</${tag}>`;
+  });
+  // Gallery grouping
+  const withItems = result.replace(
+    /<p>\s*(<img[^>]*src="([^"]+)"[^>]*>)\s*<\/p>/g,
+    '<div class="post-gallery__item"><a href="$2" class="post-gallery__link" data-lightbox>$1</a></div>'
+  );
+  return withItems.replace(/(?:<div class="post-gallery__item">[\s\S]*?<\/div>\s*)+/g, (match) => {
+    return `<div class="post-gallery">${match}</div>`;
+  });
+}
+
+const rawContent = await Promise.resolve(post.data.content);
+const postContent = enhanceContent(rawContent);
+
+// Gallery images
+const rawGallery = (post.data as { gallery?: unknown }).gallery;
+const galleryImages: string[] = Array.isArray(rawGallery)
+  ? rawGallery.map((g) => resolveImage(g as string | string[] | null)).filter((url): url is string => url.length > 0)
+  : [];
+
+// Reading time
+const plainText = rawContent.replace(/<[^>]*>/g, '');
+const wordCount = plainText.split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+// Share URLs
+const postUrl = Astro.url.href;
+const encodedUrl = encodeURIComponent(postUrl);
+const encodedTitle = encodeURIComponent(post.data.title ?? '');
+const shareUrls = {
+  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+  twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+  whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+};
+
+// JSON-LD
+const heroImage = resolveImage(post.data.image);
+const jsonLdArticle = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": post.data.title ?? '',
+  "description": post.data.description ?? '',
+  "image": heroImage,
+  "datePublished": post.data.date?.toISOString() ?? '',
+  "author": {
+    "@type": "Person",
+    "name": post.data.author ?? 'UNAG'
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Universidad Nacional de Agricultura",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.unag.edu.hn/img/logo-unag-verde-oscuro.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": postUrl
+  }
+};
+
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://blog.unag.edu.hn" },
+    ...(post.data.category ? [{ "@type": "ListItem", "position": 2, "name": post.data.category, "item": `https://blog.unag.edu.hn/search?categoria=${encodeURIComponent(post.data.category)}` }] : []),
+    { "@type": "ListItem", "position": post.data.category ? 3 : 2, "name": post.data.title ?? '' }
+  ]
+};
+---
+
+<!-- Hallmark · genre: editorial · macrostructure: Long Document · theme: UNAG custom -->
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  image={heroImage || undefined}
+  type="article"
+  publishedTime={post.data.date?.toISOString()}
+  author={post.data.author ?? undefined}
+  category={post.data.category ?? undefined}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} slot="head" />
+
+  <div id="reading-progress" class="fixed top-0 left-0 z-50 h-0.5 w-0 bg-unag-green transition-[width] duration-75" aria-hidden="true"></div>
+
+  <article>
+    <!-- Hero editorial -->
+    <div class="relative h-[55vh] min-h-80 overflow-hidden sm:h-[62vh]">
+      <img
+        src={heroImage}
+        alt={post.data.title ?? ''}
+        class="size-full object-cover"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-linear-to-t from-unag-dark-green/95 via-unag-dark-green/55 to-unag-dark-green/10" />
+      <div class="absolute bottom-0 left-0 right-0 px-4 pb-8 pt-16 sm:px-8 sm:pb-10 lg:px-12 lg:pb-14">
+        <div class="mx-auto max-w-3xl">
+          <!-- Breadcrumb visual -->
+          <nav aria-label="Ruta de navegación" class="mb-3 flex items-center gap-1.5 text-xs text-white/50">
+            <a href="/" class="hover:text-white transition">Inicio</a>
+            <span aria-hidden="true">›</span>
+            {post.data.category && (
+              <>
+                <a href={`/search?categoria=${encodeURIComponent(post.data.category)}`} class="hover:text-white transition">{post.data.category}</a>
+                <span aria-hidden="true">›</span>
+              </>
+            )}
+            <span class="text-white/70 truncate max-w-50">{post.data.title}</span>
+          </nav>
+
+          <h1 class="mt-2 font-display text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+            {post.data.title}
+          </h1>
+          <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-white/55">
+            {post.data.date ? (
+              <time datetime={post.data.date.toISOString()}>
+                {post.data.date.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
+              </time>
+            ) : (
+              <time>Fecha no disponible</time>
+            )}
+            {post.data.author && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{post.data.author}</span>
+              </>
+            )}
+            <span aria-hidden="true">·</span>
+            <span>{readingTime} min de lectura</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra superior: back + share -->
+    <div class="border-b border-unag-dark-green/10 dark:border-white/10">
+      <div class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        <a
+          href="/search"
+          class="inline-flex items-center gap-1 text-xs font-medium text-unag-gray/50 transition hover:text-unag-green dark:text-white/40 dark:hover:text-unag-light-green"
+        >
+          <svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Blog
+        </a>
+        <div class="flex items-center gap-1.5">
+          <span class="mr-1 text-xs text-unag-gray/40 dark:text-white/30">Compartir</span>
+          <a href={shareUrls.facebook} target="_blank" rel="noopener noreferrer" aria-label="Compartir en Facebook" class="share-icon-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href={shareUrls.twitter} target="_blank" rel="noopener noreferrer" aria-label="Compartir en X" class="share-icon-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href={shareUrls.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="Compartir en WhatsApp" class="share-icon-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+          <a href={shareUrls.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Compartir en LinkedIn" class="share-icon-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <button type="button" id="copy-link-btn" aria-label="Copiar enlace" class="share-icon-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+          <div class="prose prose-sm max-w-none dark:prose-invert
+            [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-unag-dark-green dark:[&_h2]:text-white
+            [&_h3]:mt-6 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-unag-green dark:[&_h3]:text-unag-light-green
+            [&_p]:text-sm [&_p]:leading-[1.85] [&_p]:text-unag-gray/80 dark:[&_p]:text-white/70
+            [&_blockquote]:border-l-2 [&_blockquote]:border-unag-green [&_blockquote]:bg-unag-light-gray/50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_blockquote]:text-sm [&_blockquote]:not-italic [&_blockquote]:text-unag-gray dark:[&_blockquote]:bg-white/[0.06] dark:[&_blockquote]:text-white/80
+            [&_ul]:text-sm [&_ul]:leading-relaxed [&_ul]:text-unag-gray/80 dark:[&_ul]:text-white/70
+            [&_li]:text-sm [&_li]:leading-relaxed
+            [&_ul>&_li::marker]:text-unag-green
+            [&_hr]:my-10 [&_hr]:border-unag-dark-green/10 dark:[&_hr]:border-white/10
+            [&_a]:text-unag-green [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-unag-dark-green dark:hover:[&_a]:text-unag-light-green">
+            {postContent ? <div set:html={postContent} /> : null}
+          </div>
+
+          {galleryImages.length > 0 && (
+            <div class="post-gallery mt-8">
+              {galleryImages.map((src) => (
+                <div class="post-gallery__item">
+                  <a href={src} class="post-gallery__link" data-lightbox>
+                    <img src={src} alt="" loading="lazy" />
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div id="post-lightbox" class="post-lightbox" aria-hidden="true">
+            <div class="post-lightbox__backdrop" data-lightbox-close></div>
+            <button type="button" class="post-lightbox__close" data-lightbox-close aria-label="Cerrar">×</button>
+            <img class="post-lightbox__image" src="" alt="" />
+            <p class="post-lightbox__caption"></p>
+          </div>
+
+          <!-- Share footer -->
+          <div class="mt-14 border-t border-unag-dark-green/10 pt-8 dark:border-white/10">
+            <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-unag-gray/40 dark:text-white/30">
+              Compartir artículo
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <a href={shareUrls.facebook} target="_blank" rel="noopener noreferrer" class="share-full-btn share-full-btn--default">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Facebook
+              </a>
+              <a href={shareUrls.twitter} target="_blank" rel="noopener noreferrer" class="share-full-btn share-full-btn--default">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                X
+              </a>
+              <a href={shareUrls.whatsapp} target="_blank" rel="noopener noreferrer" class="share-full-btn share-full-btn--whatsapp">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+              </a>
+              <a href={shareUrls.linkedin} target="_blank" rel="noopener noreferrer" class="share-full-btn share-full-btn--default">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                LinkedIn
+              </a>
+              <button type="button" id="copy-link-btn-2" class="share-full-btn share-full-btn--default">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                Copiar enlace
+              </button>
+            </div>
+          </div>
+
+          <!-- Author bio -->
+          {post.data.author && (
+            <div class="mt-10 flex items-start gap-4 rounded-xl border border-unag-dark-green/10 p-5 dark:border-white/10">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-unag-dark-green text-lg font-bold text-white dark:bg-unag-green">
+                {post.data.author.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p class="text-sm font-bold text-unag-dark-green dark:text-white">{post.data.author}</p>
+                <p class="mt-0.5 text-xs text-unag-gray/60 dark:text-white/50">Autor · Universidad Nacional de Agricultura</p>
+              </div>
+            </div>
+          )}
+
+          <!-- Newsletter CTA -->
+          <div class="mt-10 rounded-xl border border-unag-green/20 bg-unag-dark-green px-6 py-8 text-center dark:border-unag-green/30 dark:bg-white/5">
+            <p class="text-xs font-semibold uppercase tracking-widest text-unag-light-green">Newsletter</p>
+            <h3 class="mt-2 font-display text-xl font-bold text-white dark:text-white">¿Te gustó este artículo?</h3>
+            <p class="mt-1 text-sm text-white/60 dark:text-white/50">Recibe las últimas publicaciones del Blog UNAG directamente en tu correo.</p>
+            <form class="newsletter-form mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center" novalidate>
+              <input
+                type="email"
+                name="email"
+                placeholder="tu@correo.com"
+                required
+                class="newsletter-input"
+                aria-label="Correo electrónico"
+              />
+              <button type="submit" class="newsletter-btn">Suscribirse</button> 
+            </form>
+            <p id="newsletter-msg" class="mt-3 text-xs text-white/50 hidden"></p>
+          </div>
+    </div>
+  </article>
+
+  <!-- Prev / Next navigation -->
+  {(prevPost || nextPost) && (
+    <nav aria-label="Artículos anterior y siguiente" class="border-t border-unag-dark-green/10 dark:border-white/10">
+      <div class="mx-auto grid max-w-7xl grid-cols-1 gap-0 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
+        {prevPost ? (
+          <a href={`/posts/${prevPost.data.slug}`} class="post-nav-link group border-b border-unag-dark-green/10 py-8 pr-6 sm:border-b-0 sm:border-r dark:border-white/10">
+            <span class="text-xs font-semibold uppercase tracking-widest text-unag-gray/40 dark:text-white/30">← Artículo anterior</span>
+            <p class="mt-2 font-display text-base font-bold leading-snug text-unag-dark-green transition group-hover:text-unag-green dark:text-white dark:group-hover:text-unag-light-green">
+              {prevPost.data.title}
+            </p>
+          </a>
+        ) : <div />}
+        {nextPost ? (
+          <a href={`/posts/${nextPost.data.slug}`} class="post-nav-link group py-8 text-right sm:pl-6">
+            <span class="text-xs font-semibold uppercase tracking-widest text-unag-gray/40 dark:text-white/30">Siguiente artículo →</span>
+            <p class="mt-2 font-display text-base font-bold leading-snug text-unag-dark-green transition group-hover:text-unag-green dark:text-white dark:group-hover:text-unag-light-green">
+              {nextPost.data.title}
+            </p>
+          </a>
+        ) : <div />}
+      </div>
+    </nav>
+  )}
+
+  <!-- Related posts -->
+  {relatedPosts.length > 0 && (
+    <section class="border-t border-unag-dark-green/10 dark:border-white/10">
+      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <h2 class="mb-8 text-base font-semibold text-unag-dark-green dark:text-white">
+          Artículos relacionados
+        </h2>
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {relatedPosts.map((rp: StrapiPost) => (
+            <a href={`/posts/${rp.data.slug}`} class="group flex flex-col gap-4 bg-unag-light-gray p-4 rounded-xl">
+              <div class="aspect-video overflow-hidden rounded-lg">
+                <img
+                  src={resolveImage(rp.data.image)}
+                  alt={rp.data.title ?? ''}
+                  class="size-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+              </div>
+              <div class="flex flex-1 flex-col gap-1.5">
+                {rp.data.category && (
+                  <span class="text-xs font-semibold uppercase tracking-widest text-unag-green dark:text-unag-light-green">
+                    {rp.data.category}
+                  </span>
+                )}
+                <h3 class="font-display text-base font-bold leading-snug text-unag-dark-green transition group-hover:text-unag-green dark:text-white dark:group-hover:text-unag-light-green">
+                  {rp.data.title}
+                </h3>
+                {rp.data.description && (
+                  <p class="line-clamp-2 text-xs leading-relaxed text-unag-gray/60 dark:text-white/50">
+                    {rp.data.description}
+                  </p>
+                )}
+                <span class="mt-1 inline-flex items-center gap-1 text-xs font-medium text-unag-green opacity-0 transition group-hover:opacity-100 dark:text-unag-light-green">
+                  Leer artículo
+                  <svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .post-nav-link {
+    display: block;
+    text-decoration: none;
+  }
+ 
+  
+  
+</style>
+
+<script type="module">
+  // Lightbox
+  const lightbox = document.getElementById('post-lightbox');
+  const lightboxImage = lightbox?.querySelector('.post-lightbox__image');
+  const lightboxCaption = lightbox?.querySelector('.post-lightbox__caption');
+  const closeButtons = lightbox?.querySelectorAll('[data-lightbox-close]');
+
+  function openLightbox(src, alt) {
+    if (!lightbox || !lightboxImage) return;
+    lightboxImage.src = src;
+    lightboxImage.alt = alt || '';
+    lightboxCaption.textContent = alt || '';
+    lightbox.classList.add('post-lightbox--open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightboxImage) return;
+    lightbox.classList.remove('post-lightbox--open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lightboxImage.src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.post-gallery__link[data-lightbox]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const target = event.currentTarget;
+      openLightbox(target.getAttribute('href'), target.querySelector('img')?.getAttribute('alt') || '');
+    });
+  });
+
+  closeButtons?.forEach((btn) => btn.addEventListener('click', closeLightbox));
+  lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Copy link
+  async function copyLink(btn) {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      const original = btn.innerHTML;
+      btn.textContent = '¡Enlace copiado!';
+      btn.disabled = true;
+      setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 2000);
+    } catch {}
+  }
+  document.getElementById('copy-link-btn')?.addEventListener('click', (e) => copyLink(e.currentTarget));
+  document.getElementById('copy-link-btn-2')?.addEventListener('click', (e) => copyLink(e.currentTarget));
+
+  // Reading progress
+  const progress = document.getElementById('reading-progress');
+  const article = document.querySelector('article');
+  if (progress && article) {
+    window.addEventListener('scroll', () => {
+      const bottom = article.offsetTop + article.scrollHeight - window.innerHeight;
+      progress.style.width = Math.min(100, Math.max(0, (window.scrollY / bottom) * 100)) + '%';
+    }, { passive: true });
+  }
+
+  // Newsletter form (placeholder — wire to your backend/service)
+  document.querySelector('.newsletter-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const email = form.querySelector('input[type="email"]')?.value?.trim();
+    const msg = document.getElementById('newsletter-msg');
+    if (!email) return;
+    if (msg) {
+      msg.textContent = '¡Gracias! Te avisaremos con las próximas publicaciones.';
+      msg.classList.remove('hidden');
+    }
+    form.reset();
+  });
+</script>

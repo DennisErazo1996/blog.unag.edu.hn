@@ -7,8 +7,16 @@ export interface Props {
   title?: string;
   description?: string;
   image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  author?: string;
+  category?: string;
 }
-const { title, description, image } = Astro.props;
+const { title, description, image, type = 'website', publishedTime, author, category } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, 'https://blog.unag.edu.hn').href;
+const ogImage = image ?? 'https://blog.unag.edu.hn/img/hero-banner-blog.jpg';
+const siteTitle = title ? `${title} — Blog UNAG` : 'Blog UNAG — Universidad Nacional de Agricultura';
+const siteDescription = description ?? 'Blog institucional de la Universidad Nacional de Agricultura';
 ---
 
 <!doctype html>
@@ -16,19 +24,50 @@ const { title, description, image } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicon & manifest -->
+    <link rel="icon" type="image/png" href="/img/unag-hoja.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#00371d" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Nothing+You+Could+Do&display=swap" rel="stylesheet" />
-    <meta name="description" content={description ?? "Blog institucional de la Universidad Nacional de Agricultura"} />
-    {image && <meta property="og:image" content={image} />}
-    <meta property="og:title" content={title ?? "Blog UNAG"} />
-    <meta property="og:description" content={description ?? "Blog institucional de la Universidad Nacional de Agricultura"} />
-    <title>{title ? `${title} — Blog UNAG` : "Blog UNAG — Universidad Nacional de Agricultura"}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Nothing+You+Could+Do&display=swap" rel="stylesheet" />
+
+    <!-- SEO -->
+    <title>{siteTitle}</title>
+    <meta name="description" content={siteDescription} />
+    {author && <meta name="author" content={author} />}
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="Blog UNAG RSS" href="/rss.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="Blog UNAG" />
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={siteDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="es_HN" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {author && <meta property="article:author" content={author} />}
+    {category && <meta property="article:section" content={category} />}
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={siteTitle} />
+    <meta name="twitter:description" content={siteDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <slot name="head" />
   </head>
   <body class="flex min-h-screen flex-col">
+    <div id="page-loader" aria-hidden="true">
+      <img src="/img/unag-hoja.png" alt="" class="loader-logo" />
+      <div class="loader-spinner"></div>
+    </div>
     <Header />
     <main class="flex-1">
       <slot />
@@ -63,6 +102,26 @@ const { title, description, image } = Astro.props;
       }
 
       document.getElementById("dark-toggle")?.addEventListener("click", handleToggleClick);
+
+      const _loaderStart = performance.now();
+      const _LOADER_MIN = 700;
+      const _LOADER_MAX = 4000;
+
+      function _hideLoader() {
+        const loader = document.getElementById('page-loader');
+        if (!loader || loader.dataset.hidden) return;
+        loader.dataset.hidden = 'true';
+        loader.classList.add('loader--done');
+        loader.addEventListener('transitionend', () => loader.remove(), { once: true });
+      }
+
+      window.addEventListener('load', () => {
+        const elapsed = performance.now() - _loaderStart;
+        const delay = Math.max(0, _LOADER_MIN - elapsed);
+        setTimeout(_hideLoader, delay);
+      });
+
+      setTimeout(_hideLoader, _LOADER_MAX);
     </script>
   </body>
 </html>

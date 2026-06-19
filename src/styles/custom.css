@@ -156,9 +156,17 @@
 }
 .marquee-track__inner {
   display: flex;
-  gap: var(--space-md);
-  padding: 0 var(--space-md);
+  flex-shrink: 0;
+  width: max-content;
   animation: marquee-scroll 40s linear infinite;
+  will-change: transform;
+}
+
+.marquee-set {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--space-md);
+  padding-right: var(--space-md);
 }
 @keyframes marquee-scroll {
   from {

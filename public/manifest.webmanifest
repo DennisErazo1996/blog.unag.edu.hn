@@ -1,0 +1,21 @@
+{
+  "name": "Blog UNAG",
+  "short_name": "Blog UNAG",
+  "description": "Blog institucional de la Universidad Nacional de Agricultura",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#00371d",
+  "theme_color": "#00371d",
+  "icons": [
+    {
+      "src": "/img/unag-hoja.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/unag-hoja.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

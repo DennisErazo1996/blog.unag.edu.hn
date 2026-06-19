@@ -1,0 +1,185 @@
+{
+  "status": 200,
+  "data": {
+    "data": [
+      {
+        "id": 10,
+        "documentId": "bqv0aliprhstj2ra45k7d2t6",
+        "createdAt": "2026-06-18T20:56:39.583Z",
+        "updatedAt": "2026-06-18T20:56:39.583Z",
+        "publishedAt": "2026-06-18T20:56:39.594Z",
+        "title": "Proyectos de sostenibilidad ambiental liderados por estudiantes",
+        "slug": "proyectos-sostenibilidad-ambiental-estudiantes",
+        "description": "Estudiantes de la UNAG desarrollan iniciativas ecológicas que transforman comunidades rurales en Honduras.",
+        "content": "Más de 200 estudiantes de la UNAG participan activamente en proyectos de sostenibilidad ambiental que buscan restaurar ecosistemas y promover prácticas agrícolas responsables.\n\nIniciativas destacadas\n\nReforestación de cuencas hidrográficas\nEn alianza con municipalidades locales, los estudiantes han plantado más de 15,000 árboles nativos en zonas de recarga hídrica durante el último año.\n\nCompostaje y manejo de residuos\nEl programa de compostaje universitario procesa 2 toneladas de residuos orgánicos semanales, transformándolos en abono para los cultivos experimentales del campus.\n\nEnergías renovables en fincas\nLos estudiantes diseñan e instalan sistemas solares de bajo costo para pequeñas fincas, reduciendo la dependencia de combustibles fósiles.\n\nImpacto comunitario\nEstos proyectos no solo benefician al medio ambiente, sino que también mejoran la calidad de vida de las comunidades rurales al reducir costos y generar empleo verde.\n\nLa UNAG ha recibido reconocimiento internacional por su enfoque integral en la formación de profesionales conscientes del impacto ambiental de la agricultura.",
+        "date": "2026-06-08",
+        "featured": true,
+        "author": "María Fernanda López",
+        "category": {
+          "id": 3,
+          "documentId": "el7g604e5emm864twlqabigy",
+          "name": "Investigación",
+          "slug": "investigacion",
+          "createdAt": "2026-06-18T20:48:40.694Z",
+          "updatedAt": "2026-06-18T20:48:40.694Z",
+          "publishedAt": "2026-06-18T20:48:40.695Z"
+        },
+        "image": null,
+        "gallery": null
+      },
+      {
+        "id": 8,
+        "documentId": "p4dky59rv7787w1wdngh5oow",
+        "createdAt": "2026-06-18T20:56:39.507Z",
+        "updatedAt": "2026-06-18T20:56:39.507Z",
+        "publishedAt": "2026-06-18T20:56:39.547Z",
+        "title": "Seguridad alimentaria en Honduras: el rol de la UNAG",
+        "slug": "seguridad-alimentaria-honduras",
+        "description": "La UNAG contribuye a la seguridad alimentaria del país mediante investigaciones y programas de extensión agrícola.",
+        "content": "Honduras enfrenta desafíos significativos en materia de seguridad alimentaria, y la UNAG se ha posicionado como un actor clave en la búsqueda de soluciones sostenibles.\n\nInvestigación aplicada\nEl centro de investigación de la UNAG desarrolla variedades de cultivos resistentes a la sequía, un problema cada vez más frecuente debido al cambio climático.\n\nCultivos mejorados\n- Frijol tolerante a sequía extendida\n- Maíz de alto rendimiento nutricional\n- Yuca con mayor contenido de vitamina A\n- Variedades de arroz que requieren menos agua\n\nExtensión agrícola\nA través del programa de extensión, los estudiantes llevan conocimiento técnico directamente a los pequeños productores, cerrando la brecha entre la investigación y la práctica.\n\n\"La seguridad alimentaria no se logra solo produciendo más, sino produciendo mejor y de manera más inteligente.\" — Ing. Roberto Santos\n\nLos resultados han demostrado que la adopción de estas variedades mejoradas puede incrementar los rendimientos hasta en un 40%, incluso en condiciones adversas.",
+        "date": "2026-06-05",
+        "featured": false,
+        "author": "Ing. Roberto Santos",
+        "category": {
+          "id": 3,
+          "documentId": "el7g604e5emm864twlqabigy",
+          "name": "Investigación",
+          "slug": "investigacion",
+          "createdAt": "2026-06-18T20:48:40.694Z",
+          "updatedAt": "2026-06-18T20:48:40.694Z",
+          "publishedAt": "2026-06-18T20:48:40.695Z"
+        },
+        "image": null,
+        "gallery": null
+      },
+      {
+        "id": 11,
+        "documentId": "b5uhikwjjj74f0aznfhlk4mm",
+        "createdAt": "2026-06-18T20:56:39.200Z",
+        "updatedAt": "2026-06-18T21:38:56.537Z",
+        "publishedAt": "2026-06-18T21:38:56.567Z",
+        "title": "Oportunidades de becas internacionales para estudiantes UNAG",
+        "slug": "oportunidades-becas-internacionales",
+        "description": "Conoce los programas de intercambio y becas disponibles para estudiantes de la UNAG en universidades de todo el mundo.",
+        "content": "La **Oficina de Relaciones Internacionales de la UNAG** ha gestionado más de 50 becas para estudiantes en universidades de América Latina, Europa y Asia durante 2026.\n\nProgramas disponibles\n\nErasmus+ (Unión Europea)\nConvenios con universidades agrícolas en España, Países Bajos y Alemania para intercambios semestrales con financiamiento completo.\n\nBecas OEA\nPrograma de becas para estudios de posgrado en agricultura sostenible ofrecido por la Organización de los Estados Americanos.\n\nJICA (Japón)\nPasantías técnicas en agricultura de precisión y manejo de recursos hídricos en universidades japonesas.\n\nRequisitos generales\n\n- Promedio mínimo de 80%\n- Dominio del idioma del país destino\n- Carta de motivación\n- Aval académico de un profesor de la UNAG\n\nLos interesados deben contactar la Oficina de Relaciones Internacionales en el edificio administrativo o escribir a relacionesinternacionales@unag.edu.hn.",
+        "date": "2026-06-03",
+        "featured": true,
+        "author": "Lic. Ana Patricia Flores",
+        "category": {
+          "id": 4,
+          "documentId": "olubdkdt98r7oc9ywwqxt4km",
+          "name": "Internacionalización",
+          "slug": "internacionalizacion",
+          "createdAt": "2026-06-18T20:48:40.698Z",
+          "updatedAt": "2026-06-18T20:48:40.698Z",
+          "publishedAt": "2026-06-18T20:48:40.698Z"
+        },
+        "image": {
+          "id": 1,
+          "documentId": "n74cbsg49ltcsdth6ubjy8h1",
+          "name": "istockphoto-2172615371-612x612.jpg",
+          "alternativeText": null,
+          "caption": null,
+          "focalPoint": null,
+          "width": 612,
+          "height": 382,
+          "formats": {
+            "small": {
+              "ext": ".jpg",
+              "url": "/uploads/small_istockphoto_2172615371_612x612_e0f19cede8.jpg",
+              "hash": "small_istockphoto_2172615371_612x612_e0f19cede8",
+              "mime": "image/jpeg",
+              "name": "small_istockphoto-2172615371-612x612.jpg",
+              "path": null,
+              "size": 16.76,
+              "width": 500,
+              "height": 312,
+              "sizeInBytes": 16763
+            },
+            "thumbnail": {
+              "ext": ".jpg",
+              "url": "/uploads/thumbnail_istockphoto_2172615371_612x612_e0f19cede8.jpg",
+              "hash": "thumbnail_istockphoto_2172615371_612x612_e0f19cede8",
+              "mime": "image/jpeg",
+              "name": "thumbnail_istockphoto-2172615371-612x612.jpg",
+              "path": null,
+              "size": 5.46,
+              "width": 245,
+              "height": 153,
+              "sizeInBytes": 5458
+            }
+          },
+          "hash": "istockphoto_2172615371_612x612_e0f19cede8",
+          "ext": ".jpg",
+          "mime": "image/jpeg",
+          "size": 22.63,
+          "url": "/uploads/istockphoto_2172615371_612x612_e0f19cede8.jpg",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "createdAt": "2026-06-18T21:38:45.116Z",
+          "updatedAt": "2026-06-18T21:38:45.116Z",
+          "publishedAt": "2026-06-18T21:38:45.117Z"
+        },
+        "gallery": null
+      },
+      {
+        "id": 6,
+        "documentId": "g79y8st714bo9z1g8vb7t6aw",
+        "createdAt": "2026-06-18T20:56:39.438Z",
+        "updatedAt": "2026-06-18T20:56:39.438Z",
+        "publishedAt": "2026-06-18T20:56:39.449Z",
+        "title": "Feria Agrícola UNAG 2026: innovación y tradición",
+        "slug": "feria-agricola-unag-2026",
+        "description": "La Feria Agrícola anual de la UNAG reunió a productores, estudiantes y empresas del sector en un evento que destacó lo mejor del campo.",
+        "content": "La edición 2026 de la Feria Agrícola de la UNAG superó todas las expectativas con más de 10,000 visitantes y 150 expositores de todo el país.\n\nLo más destacado\n\nExposición tecnológica\nEmpresas líderes presentaron maquinaria agrícola de última generación, sistemas de riego inteligente y soluciones de agricultura vertical.\n\nConcurso de innovación estudiantil\nLos estudiantes compitieron con proyectos como:\n1. Biofertilizante a base de microalgas — primer lugar\n2. Sistema de monitoreo de suelo IoT — segundo lugar\n3. Deshidratador solar de frutas — tercer lugar\n\nRueda de negocios\nProductores y compradores realizaron transacciones por más de L. 5 millones durante los tres días del evento.\n\nParticipación comunitaria\nLa feria incluyó talleres prácticos para niños, degustaciones de productos locales y presentaciones culturales, reafirmando el vínculo entre la universidad y la comunidad.\n\nLa Feria Agrícola se consolida como el evento más importante del sector en la región y una vitrina del talento y la innovación de la UNAG.",
+        "date": "2026-05-28",
+        "featured": true,
+        "author": "Departamento de Comunicaciones",
+        "category": {
+          "id": 2,
+          "documentId": "kvoo3zcofjymct6faysyzdny",
+          "name": "Eventos",
+          "slug": "eventos",
+          "createdAt": "2026-06-18T20:48:40.690Z",
+          "updatedAt": "2026-06-18T20:48:40.690Z",
+          "publishedAt": "2026-06-18T20:48:40.690Z"
+        },
+        "image": null,
+        "gallery": null
+      },
+      {
+        "id": 4,
+        "documentId": "s6v96ziqlnw1716gkpfgx6ms",
+        "createdAt": "2026-06-18T20:56:39.310Z",
+        "updatedAt": "2026-06-18T20:56:39.310Z",
+        "publishedAt": "2026-06-18T20:56:39.334Z",
+        "title": "Guía práctica para iniciar un huerto orgánico en casa",
+        "slug": "guia-practica-huerto-organico",
+        "description": "Aprende los fundamentos de la agricultura orgánica y cómo puedes cultivar tus propios alimentos de manera saludable.",
+        "content": "Cada vez más personas buscan alternativas saludables y sostenibles para producir sus propios alimentos. Esta guía te ayudará a dar los primeros pasos.\n\nPaso 1: Elegir el espacio\nNo necesitas un gran terreno. Un balcón, terraza o pequeño patio puede ser suficiente. Lo importante es que reciba al menos 6 horas de luz solar directa.\n\nPaso 2: Preparar el sustrato\nLa base de un huerto orgánico es un suelo rico en nutrientes. Mezcla tierra negra con compost y fibra de coco en partes iguales.\n\nPaso 3: Qué cultivar\nPara principiantes recomendamos:\n- Lechuga — crecimiento rápido, cosecha en 30 días\n- Tomate cherry — productivo y resistente\n- Hierbas aromáticas — albahaca, cilantro, menta\n- Rábanos — cosecha en 25 días\n- Chile dulce — excelente para macetas\n\nPaso 4: Riego y cuidado\nEl riego debe ser constante pero sin encharcar. La mañana temprano es el mejor momento. Utiliza agua de lluvia cuando sea posible.\n\nControl de plagas natural\nPrepara un insecticida natural con ajo, cebolla y jabón neutro. Rocía las plantas cada 15 días como prevención.\n\nCon estos fundamentos, cualquier persona puede comenzar su propio huerto orgánico y contribuir a una alimentación más saludable y sostenible.",
+        "date": "2026-05-25",
+        "featured": false,
+        "author": "Ing. María José Rivera",
+        "category": {
+          "id": 1,
+          "documentId": "so49yqtjn1i5hozzmsvhci80",
+          "name": "Académico",
+          "slug": "academico",
+          "createdAt": "2026-06-18T20:48:40.686Z",
+          "updatedAt": "2026-06-18T20:48:40.686Z",
+          "publishedAt": "2026-06-18T20:48:40.686Z"
+        },
+        "image": null,
+        "gallery": null
+      }
+    ],
+    "meta": {
+      "pagination": {
+        "start": 0,
+        "limit": 5,
+        "total": 5
+      }
+    }
+  }
+}
