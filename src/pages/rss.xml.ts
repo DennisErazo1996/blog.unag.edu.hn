@@ -1,3 +1,4 @@
+export const prerender = false;
 import rss from '@astrojs/rss';
 import { getAllPosts } from '../lib/strapi';
 
