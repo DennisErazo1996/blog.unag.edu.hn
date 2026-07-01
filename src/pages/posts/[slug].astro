@@ -345,14 +345,14 @@ const jsonLdBreadcrumb = {
 
   <!-- Related posts -->
   {relatedPosts.length > 0 && (
-    <section class="border-t border-unag-dark-green/10 dark:border-white/10">
+    <section class="border-t border-unag-dark-green/10 dark:border-white/10 dark:bg-black">
       <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <h2 class="mb-8 text-base font-semibold text-unag-dark-green dark:text-white">
           Artículos relacionados
         </h2>
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {relatedPosts.map((rp: StrapiPost) => (
-            <a href={`/posts/${rp.data.slug}`} class="group flex flex-col gap-4 bg-unag-light-gray p-4 rounded-xl">
+            <a href={`/posts/${rp.data.slug}`} class="group flex flex-col gap-4 bg-unag-light-gray dark:bg-unag-dark-green p-4 rounded-xl">
               <div class="aspect-video overflow-hidden rounded-lg">
                 <img
                   src={resolveImage(rp.data.image)}
