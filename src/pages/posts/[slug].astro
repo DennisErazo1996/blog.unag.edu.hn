@@ -141,7 +141,7 @@ const jsonLdBreadcrumb = {
 
   <div id="reading-progress" class="fixed top-0 left-0 z-50 h-0.5 w-0 bg-unag-green transition-[width] duration-75" aria-hidden="true"></div>
 
-  <article>
+  <article class="dark:bg-black">
     <!-- Hero editorial -->
     <div class="relative h-[55vh] min-h-80 overflow-hidden sm:h-[62vh]">
       <img
@@ -321,7 +321,7 @@ const jsonLdBreadcrumb = {
 
   <!-- Prev / Next navigation -->
   {(prevPost || nextPost) && (
-    <nav aria-label="Artículos anterior y siguiente" class="border-t border-unag-dark-green/10 dark:border-white/10">
+    <nav aria-label="Artículos anterior y siguiente" class="border-t border-unag-dark-green/10 dark:border-white/10 dark:bg-black">
       <div class="mx-auto grid max-w-7xl grid-cols-1 gap-0 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
         {prevPost ? (
           <a href={`/posts/${prevPost.data.slug}`} class="post-nav-link group border-b border-unag-dark-green/10 py-8 pr-6 sm:border-b-0 sm:border-r dark:border-white/10">
