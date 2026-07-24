@@ -77,7 +77,7 @@ const wordCount = plainText.split(/\s+/).filter(Boolean).length;
 const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
 // Share URLs
-const postUrl = Astro.url.href;
+const postUrl = new URL(Astro.url.pathname, Astro.site).href;
 const encodedUrl = encodeURIComponent(postUrl);
 const encodedTitle = encodeURIComponent(post.data.title ?? '');
 const shareUrls = {
