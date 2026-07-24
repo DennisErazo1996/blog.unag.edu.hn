@@ -36,6 +36,9 @@ function mapItem(item: any) {
   const categoryName = categoryData?.attributes?.name || categoryData?.name || null;
   const categoryId = categoryData?.id || null;
 
+  const authorData = a.author?.data ?? a.author;
+  const authorName = authorData?.attributes?.name || authorData?.name || (typeof a.author === 'string' ? a.author : null);
+
   const image = a.image ? mediaUrl(a.image) : null;
   const gallery = Array.isArray(a.gallery?.data)
     ? a.gallery.data.map((g: any) => mediaUrl({ data: g }))
@@ -53,7 +56,7 @@ function mapItem(item: any) {
       image,
       gallery,
       featured: !!a.featured,
-      author: a.author || null,
+      author: authorName,
       slug: a.slug || null,
     },
     raw: item,
